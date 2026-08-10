@@ -41,6 +41,12 @@ dependências e abre o app.
 
 ## Gerando o executável final
 
+No Windows, clique duas vezes em [`build.bat`](build.bat) — ele faz os mesmos checks do
+`dev.bat` (Node/Rust/Git LFS), roda os testes do Rust, gera o build de release e copia o
+`.exe` pronto pra `release/Ferramentas de Mídia.exe`, já abrindo o Explorer nele no final.
+
+Ou manualmente:
+
 ```sh
 npm run tauri build -- --no-bundle
 ```
