@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    prisma_scaffold_lib::run()
+    prisma_midia_lib::run()
 }
