@@ -1,0 +1,30 @@
+:root {
+  --bg: #0f0f13;
+  --panel: #1a1a2e;
+  --panel-hover: #1f1f3a;
+  --border: #3a3a6e;
+  --border-hover: #7777ff;
+
+  --text-title: #e0e0ff;
+  --text-label: #8888cc;
+  --text-filename: #aaaaee;
+  --text-sub: #444477;
+  --text-status: #6666cc;
+  --text-success: #88eebb;
+
+  --accent-compress: #3333aa;
+  --accent-compress-hover: #5555cc;
+  --accent-convert: #1a7a5a;
+  --accent-convert-hover: #22aa77;
+  --accent-cancel: #7a1a1a;
+  --accent-cancel-hover: #aa2222;
+  --accent-cancel-text: #ffaaaa;
+
+  --reset-bg: #1e1e3a;
+  --reset-bg-hover: #2a2a55;
+
+  --progress-track: #1a1a2e;
+  --progress-fill: #5555ff;
+
+  --font-mono: "Courier New", Consolas, monospace;
+}
