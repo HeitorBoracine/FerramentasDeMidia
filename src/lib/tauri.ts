@@ -67,10 +67,6 @@ export async function saveSettings(settings: Settings) {
   return invoke("save_settings", { settings });
 }
 
-export async function showSuccess(title: string, text: string) {
-  return message(text, { title, kind: "info" });
-}
-
 export async function showError(title: string, text: string) {
   return message(text, { title, kind: "error" });
 }

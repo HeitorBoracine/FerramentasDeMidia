@@ -20,7 +20,6 @@ import {
   revealInFolder,
   saveSettings,
   showError,
-  showSuccess,
   startFileDrag,
 } from "./lib/tauri";
 import {
@@ -192,14 +191,6 @@ export default function App() {
             destPath: event.destPath,
             message: `✅ Concluído! ${beforeMb.toFixed(1)} MB → ${afterMb.toFixed(1)} MB  (${reducao.toFixed(0)}% menor)`,
           });
-          void showSuccess(
-            "Sucesso!",
-            `Vídeo comprimido com sucesso!\n\n` +
-              `📁 Salvo em:\n${event.destPath}\n\n` +
-              `📦 Tamanho original: ${beforeMb.toFixed(1)} MB\n` +
-              `📦 Tamanho final:    ${afterMb.toFixed(1)} MB\n` +
-              `📉 Redução:          ${reducao.toFixed(0)}%`,
-          );
         } else {
           const ext = event.destPath.split(".").pop()?.toUpperCase() ?? "";
           dispatch({
@@ -207,10 +198,6 @@ export default function App() {
             destPath: event.destPath,
             message: `✅ Convertido com sucesso para ${ext}`,
           });
-          void showSuccess(
-            "Sucesso!",
-            `Arquivo convertido com sucesso!\n\n📁 Salvo em:\n${event.destPath}`,
-          );
         }
         break;
       }
