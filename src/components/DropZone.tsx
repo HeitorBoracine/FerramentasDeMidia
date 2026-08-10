@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function DropZone({ file, disabled, onFileSelected, onClick }: Props) {
-  const dragOver = useDragDrop((path) => {
+  const { dragOver, zoneRef } = useDragDrop<HTMLDivElement>((path) => {
     if (!disabled) onFileSelected(path);
   });
 
@@ -22,6 +22,7 @@ export function DropZone({ file, disabled, onFileSelected, onClick }: Props) {
 
   return (
     <div
+      ref={zoneRef}
       className={`drop-zone${dragOver ? " drag-over" : ""}`}
       onClick={disabled ? undefined : onClick}
       style={disabled ? { cursor: "default" } : undefined}
