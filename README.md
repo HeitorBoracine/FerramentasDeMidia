@@ -1,7 +1,58 @@
-# Tauri + React + Typescript
+# Prisma Mídia
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+Compressor e conversor de vídeo/imagem 100% local e offline. Comprime vídeos e converte
+vídeos e imagens entre os principais formatos do mercado, tudo processado na sua máquina
+via [FFmpeg](https://ffmpeg.org/) — nenhum arquivo sai do seu computador.
 
-## Recommended IDE Setup
+Reescrita em [Tauri v2](https://v2.tauri.app/) (Rust) + React + TypeScript da versão original
+em Python/Tkinter, que está preservada em [`legacy-python/`](legacy-python/) como referência.
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## Funcionalidades
+
+- **Comprimir vídeo** — três níveis de qualidade (Alta/Média/Baixa), usando libx264/AAC.
+- **Converter vídeo** — MP4, MKV, AVI, MOV, WEBM, WMV, FLV.
+- **Converter imagem** — PNG, JPG, BMP, WEBP, TIFF, GIF.
+- Arrastar-e-soltar ou clicar pra selecionar o arquivo.
+- Progresso em tempo real e cancelamento a qualquer momento.
+- Lembra as últimas pastas de abrir/salvar usadas.
+- **Um único `.exe` portátil** — nada de instalação. O FFmpeg e o FFprobe vêm embutidos
+  no próprio executável e são extraídos uma vez só (na primeira abertura) para
+  `%LOCALAPPDATA%\<identifier>\bin\`; as aberturas seguintes pulam a extração.
+
+## Rodando em desenvolvimento
+
+Pré-requisitos: [Rust](https://www.rust-lang.org/tools/install) + [Node.js](https://nodejs.org/)
+(18+). Windows é a única plataforma suportada por enquanto.
+
+> **Antes de rodar pela primeira vez**: `src-tauri/assets/ffmpeg.exe` e `ffprobe.exe`
+> precisam existir (são versionados via [Git LFS](https://git-lfs.com/) — rode
+> `git lfs install` uma vez e depois `git lfs pull` se eles não vierem no clone).
+> Sem eles, a compilação falha porque são embutidos no binário via `include_bytes!`.
+
+```sh
+npm install
+npm run tauri dev
+```
+
+## Gerando o executável final
+
+```sh
+npm run tauri build -- --no-bundle
+```
+
+O `.exe` portátil final fica em `src-tauri/target/release/prisma-midia.exe` — é
+só copiar esse arquivo pra qualquer lugar e abrir, não precisa de mais nada ao lado.
+(`--no-bundle` porque `bundle.active` já está `false` no `tauri.conf.json` — não geramos
+instalador NSIS/MSI de propósito, só o binário puro.)
+
+Detalhes de arquitetura, o fluxo Rust↔React e a tabela de codecs usada em cada formato
+estão documentados em [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+## Aviso sobre SmartScreen / antivírus
+
+Como é um `.exe` não assinado digitalmente que extrai binários embutidos na primeira
+execução, é esperado que o Windows SmartScreen ou algum antivírus mostre um aviso na
+primeira vez que ele rodar numa máquina nova (comportamento comum a qualquer app não
+assinado que faz isso — o app Python original também tinha o mesmo risco via
+PyInstaller). Não há correção "no código" pra isso; só um certificado de assinatura
+de código resolveria de vez.
