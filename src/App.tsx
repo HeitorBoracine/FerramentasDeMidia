@@ -7,13 +7,16 @@ import { ActionButtons } from "./components/ActionButtons";
 import { FormatDialog } from "./components/FormatDialog";
 import { ProgressBar } from "./components/ProgressBar";
 import { StatusLine } from "./components/StatusLine";
+import { FileActions } from "./components/FileActions";
 import {
   cancelJob,
   compressVideo,
   convertFile,
   getSettings,
+  openFile,
   pickInputFile,
   pickSavePath,
+  revealInFolder,
   saveSettings,
   showError,
   showSuccess,
@@ -33,6 +36,7 @@ interface State {
   quality: Quality;
   job: JobStatus;
   dialogOpen: boolean;
+  lastOutputPath: string | null;
 }
 
 type Action =
@@ -43,7 +47,7 @@ type Action =
   | { type: "DIALOG_CLOSE" }
   | { type: "JOB_STARTED"; kind: JobKind }
   | { type: "PROGRESS"; percent: number }
-  | { type: "JOB_DONE"; message: string }
+  | { type: "JOB_DONE"; message: string; destPath: string }
   | { type: "JOB_ERROR"; message: string }
   | { type: "JOB_CANCELLED"; message: string };
 
@@ -58,6 +62,7 @@ function createInitialState(): State {
       message: "Selecione um vídeo ou imagem para começar",
     },
     dialogOpen: false,
+    lastOutputPath: null,
   };
 }
 
@@ -68,6 +73,7 @@ function reducer(state: State, action: Action): State {
         ...state,
         file: action.file,
         dialogOpen: false,
+        lastOutputPath: null,
         job: {
           state: "idle",
           kind: null,
@@ -90,6 +96,7 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         dialogOpen: false,
+        lastOutputPath: null,
         job: {
           state: "running",
           kind: action.kind,
@@ -103,6 +110,7 @@ function reducer(state: State, action: Action): State {
     case "JOB_DONE":
       return {
         ...state,
+        lastOutputPath: action.destPath,
         job: { ...state.job, state: "success", percent: 100, message: action.message },
       };
     case "JOB_ERROR":
@@ -175,6 +183,7 @@ export default function App() {
           const reducao = (1 - afterMb / beforeMb) * 100;
           dispatch({
             type: "JOB_DONE",
+            destPath: event.destPath,
             message: `✅ Concluído! ${beforeMb.toFixed(1)} MB → ${afterMb.toFixed(1)} MB  (${reducao.toFixed(0)}% menor)`,
           });
           void showSuccess(
@@ -187,7 +196,11 @@ export default function App() {
           );
         } else {
           const ext = event.destPath.split(".").pop()?.toUpperCase() ?? "";
-          dispatch({ type: "JOB_DONE", message: `✅ Convertido com sucesso para ${ext}` });
+          dispatch({
+            type: "JOB_DONE",
+            destPath: event.destPath,
+            message: `✅ Convertido com sucesso para ${ext}`,
+          });
           void showSuccess(
             "Sucesso!",
             `Arquivo convertido com sucesso!\n\n📁 Salvo em:\n${event.destPath}`,
@@ -268,6 +281,14 @@ export default function App() {
     await cancelJob();
   }
 
+  async function handleOpenFile() {
+    if (state.lastOutputPath) await openFile(state.lastOutputPath);
+  }
+
+  async function handleRevealInFolder() {
+    if (state.lastOutputPath) await revealInFolder(state.lastOutputPath);
+  }
+
   const formatOptions = state.file ? formatosDestino(state.file.path, state.file.kind) : [];
 
   return (
@@ -301,6 +322,13 @@ export default function App() {
 
       <ProgressBar percent={state.job.percent} />
       <StatusLine message={state.job.message} />
+
+      {state.job.state === "success" && state.lastOutputPath && (
+        <FileActions
+          onOpenFile={() => void handleOpenFile()}
+          onRevealInFolder={() => void handleRevealInFolder()}
+        />
+      )}
 
       {state.dialogOpen && state.file && (
         <FormatDialog

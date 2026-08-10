@@ -50,6 +50,14 @@ fn parse_out_time_ms(line: &str) -> Option<u64> {
     line.strip_prefix("out_time_ms=")?.trim().parse::<u64>().ok()
 }
 
+/// Últimas `n` linhas não vazias de `text` — o que o ffmpeg escreve de mais
+/// relevante num erro costuma estar nas últimas linhas do stderr.
+fn tail_lines(text: &str, n: usize) -> String {
+    let lines: Vec<&str> = text.lines().filter(|l| !l.trim().is_empty()).collect();
+    let start = lines.len().saturating_sub(n);
+    lines[start..].join("\n")
+}
+
 /// Roda um job de FFmpeg até o fim, transmitindo progresso pelo `channel`.
 /// Mantém o `Child` em `job_state` durante a execução pra que `cancel_job`
 /// consiga matá-lo a qualquer momento.
@@ -70,7 +78,7 @@ pub fn run_job(job: FfmpegJob, job_state: &State<JobState>, channel: &Channel<Pr
         cmd.arg("-progress").arg("pipe:1").arg("-nostats");
     }
     cmd.arg(&job.output);
-    cmd.stdout(Stdio::piped()).stderr(Stdio::null());
+    cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
 
     job_state.cancelled.store(false, Ordering::SeqCst);
 
@@ -85,7 +93,23 @@ pub fn run_job(job: FfmpegJob, job_state: &State<JobState>, channel: &Channel<Pr
     };
 
     let stdout = child.stdout.take();
+    let stderr = child.stderr.take();
     *job_state.child.lock().unwrap() = Some(child);
+
+    // Lê o stderr numa thread separada e concorrente — se só líssemos o stdout,
+    // o ffmpeg pode travar esperando alguém esvaziar o pipe de stderr assim que
+    // ele enche (ffmpeg escreve bastante log ali mesmo sem `-nostats`).
+    let stderr_thread = stderr.map(|stderr| {
+        std::thread::spawn(move || {
+            let reader = BufReader::new(stderr);
+            let mut acc = String::new();
+            for line in reader.lines().map_while(Result::ok) {
+                acc.push_str(&line);
+                acc.push('\n');
+            }
+            acc
+        })
+    });
 
     if let Some(stdout) = stdout {
         let reader = BufReader::new(stdout);
@@ -101,6 +125,8 @@ pub fn run_job(job: FfmpegJob, job_state: &State<JobState>, channel: &Channel<Pr
             }
         }
     }
+
+    let stderr_text = stderr_thread.and_then(|t| t.join().ok()).unwrap_or_default();
 
     // O processo já encerrou (pipe fechado) — recupera o Child pra dar `wait()`
     // e pegar o código de saída. Se `cancel_job` já tiver limpado isso, não faz nada.
@@ -128,16 +154,28 @@ pub fn run_job(job: FfmpegJob, job_state: &State<JobState>, channel: &Channel<Pr
         }
         _ => {
             let _ = std::fs::remove_file(&job.output);
-            let _ = channel.send(ProgressEvent::Error {
-                message: "O FFmpeg encerrou com erro. Verifique se o arquivo é válido.".into(),
-            });
+            let detalhe = tail_lines(&stderr_text, 6);
+            let message = if detalhe.is_empty() {
+                "O FFmpeg encerrou com erro. Verifique se o arquivo é válido.".to_string()
+            } else {
+                format!("O FFmpeg encerrou com erro:\n{detalhe}")
+            };
+            let _ = channel.send(ProgressEvent::Error { message });
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::ProgressEvent;
+    use super::{tail_lines, ProgressEvent};
+
+    #[test]
+    fn tail_lines_keeps_only_last_n_non_empty() {
+        let text = "a\nb\n\nc\nd\ne\n";
+        assert_eq!(tail_lines(text, 2), "d\ne");
+        assert_eq!(tail_lines(text, 100), "a\nb\nc\nd\ne");
+        assert_eq!(tail_lines("", 5), "");
+    }
 
     /// Garante que o formato serializado bate com o tipo `ProgressEvent` em
     /// src/types/index.ts — `type` em camelCase e campos também em camelCase.

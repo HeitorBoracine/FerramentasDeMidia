@@ -1,6 +1,6 @@
 # Implementação legada (Python/Tkinter)
 
-Esta é a versão original do app "Prisma Mídia" (antes chamado "Compressor de Vídeo"), escrita em Python + Tkinter e empacotada com PyInstaller.
+Esta é a versão original do app "Ferramentas de Mídia" (antes chamado "Compressor de Vídeo", depois "Prisma Mídia"), escrita em Python + Tkinter e empacotada com PyInstaller.
 
 Foi substituída por uma reescrita em Tauri v2 (Rust + React + TypeScript) — veja o [README.md](../README.md) na raiz do repositório para a versão atual.
 

@@ -4,13 +4,13 @@ setlocal enabledelayedexpansion
 cd /d "%~dp0"
 
 echo ============================================
-echo   Prisma Midia - ambiente de desenvolvimento
+echo   Ferramentas de Midia - ambiente de dev
 echo ============================================
 echo.
 
 REM --- Mata uma instancia anterior que tenha ficado presa (janela fechada errado, etc) ---
 echo [1/5] Encerrando instancias antigas, se houver...
-taskkill /IM prisma-midia.exe /F >nul 2>nul
+taskkill /IM ferramentas-de-midia.exe /F >nul 2>nul
 
 REM --- Verifica Node.js ---
 echo [2/5] Verificando pre-requisitos...
@@ -80,7 +80,7 @@ if errorlevel 1 (
 )
 
 REM --- Inicia o app em modo desenvolvimento ---
-echo [5/5] Iniciando Prisma Midia...
+echo [5/5] Iniciando Ferramentas de Midia...
 echo.
 call npm run tauri dev
 

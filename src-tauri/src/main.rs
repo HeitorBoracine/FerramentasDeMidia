@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    prisma_midia_lib::run()
+    ferramentas_de_midia_lib::run()
 }

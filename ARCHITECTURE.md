@@ -50,8 +50,8 @@ são embutidos no executável em tempo de compilação via `include_bytes!`
 extrai os dois pra:
 
 ```
-%LOCALAPPDATA%\com.heitor.prismamidia\bin\ffmpeg.exe
-%LOCALAPPDATA%\com.heitor.prismamidia\bin\ffprobe.exe
+%LOCALAPPDATA%\com.heitor.ferramentasdemidia\bin\ffmpeg.exe
+%LOCALAPPDATA%\com.heitor.ferramentasdemidia\bin\ffprobe.exe
 ```
 
 ...só se o arquivo ainda não existir lá ou tiver um tamanho diferente do que está
@@ -87,7 +87,7 @@ praticamente instantânea) — ver o campo `track_progress` em `FfmpegJob`.
 Últimas pastas de abrir/salvar, em:
 
 ```
-%APPDATA%\com.heitor.prismamidia\config.json
+%APPDATA%\com.heitor.ferramentasdemidia\config.json
 ```
 
 ```json

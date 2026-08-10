@@ -1,4 +1,4 @@
-# Prisma Mídia
+# Ferramentas de Mídia
 
 Compressor e conversor de vídeo/imagem 100% local e offline. Comprime vídeos e converte
 vídeos e imagens entre os principais formatos do mercado, tudo processado na sua máquina
@@ -45,7 +45,7 @@ dependências e abre o app.
 npm run tauri build -- --no-bundle
 ```
 
-O `.exe` portátil final fica em `src-tauri/target/release/prisma-midia.exe` — é
+O `.exe` portátil final fica em `src-tauri/target/release/ferramentas-de-midia.exe` — é
 só copiar esse arquivo pra qualquer lugar e abrir, não precisa de mais nada ao lado.
 (`--no-bundle` porque `bundle.active` já está `false` no `tauri.conf.json` — não geramos
 instalador NSIS/MSI de propósito, só o binário puro.)

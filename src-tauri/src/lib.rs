@@ -8,6 +8,7 @@ use tauri::Manager;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
         .manage(state::JobState::default())
         .setup(|app| {
             let binaries = ffmpeg::binaries::ensure_binaries(app.handle())?;

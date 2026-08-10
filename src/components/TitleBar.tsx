@@ -6,7 +6,7 @@ interface Props {
 export function TitleBar({ onReset, resetDisabled }: Props) {
   return (
     <div className="title-bar">
-      <h1>🔮 PRISMA MÍDIA</h1>
+      <h1>🛠️ FERRAMENTAS DE MÍDIA</h1>
       <button
         className="reset-btn"
         onClick={onReset}

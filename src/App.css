@@ -13,15 +13,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 560px;
-  padding: 14px 0 4px;
+  width: 640px;
+  padding: 16px 0 6px;
 }
 
 .title-bar h1 {
   flex: 1;
   text-align: center;
   margin: 0;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   color: var(--text-title);
   letter-spacing: 0.5px;
@@ -32,8 +32,8 @@
   color: var(--text-label);
   border: none;
   border-radius: 4px;
-  font-size: 15px;
-  padding: 4px 10px;
+  font-size: 20px;
+  padding: 4px 12px;
   cursor: pointer;
 }
 
@@ -45,14 +45,14 @@
 /* --- Zona de drop --- */
 
 .drop-zone {
-  width: 560px;
-  height: 160px;
-  margin-top: 4px;
+  width: 640px;
+  height: 170px;
+  margin-top: 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   background: var(--panel);
   border: 2px solid var(--border);
   border-radius: 4px;
@@ -66,12 +66,12 @@
 }
 
 .drop-icon {
-  font-size: 36px;
+  font-size: 44px;
   line-height: 1;
 }
 
 .drop-label {
-  font-size: 12px;
+  font-size: 16px;
   color: var(--text-label);
 }
 
@@ -84,14 +84,14 @@
 }
 
 .drop-sub {
-  font-size: 8px;
+  font-size: 12px;
   color: var(--text-sub);
 }
 
 .filename {
-  margin-top: 3px;
-  max-width: 560px;
-  font-size: 9px;
+  margin-top: 4px;
+  max-width: 640px;
+  font-size: 12px;
   color: var(--text-filename);
   text-align: center;
   word-break: break-all;
@@ -102,13 +102,13 @@
 .quality-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-  margin-bottom: 8px;
+  gap: 12px;
+  margin-top: 12px;
+  margin-bottom: 10px;
 }
 
 .quality-row label {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--text-label);
 }
 
@@ -118,9 +118,9 @@
   border: 1px solid var(--border);
   border-radius: 3px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  padding: 4px 6px;
-  width: 220px;
+  font-size: 14px;
+  padding: 6px 8px;
+  width: 260px;
 }
 
 .quality-select:disabled {
@@ -131,28 +131,28 @@
 /* --- Separador --- */
 
 .separator {
-  width: 540px;
+  width: 620px;
   height: 1px;
   background: #2a2a4a;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 /* --- Botões de ação --- */
 
 .actions-row {
   display: flex;
-  gap: 10px;
-  margin-top: 16px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-top: 18px;
+  margin-bottom: 14px;
 }
 
 .btn {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: bold;
   border: none;
   border-radius: 4px;
-  padding: 10px 20px;
+  padding: 12px 24px;
   cursor: pointer;
   color: #fff;
 }
@@ -183,11 +183,11 @@
 /* --- Barra de progresso --- */
 
 .progress-track {
-  width: 560px;
-  height: 12px;
-  margin: 6px 0 10px;
+  width: 640px;
+  height: 14px;
+  margin: 6px 0 12px;
   background: var(--progress-track);
-  border-radius: 2px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
@@ -200,11 +200,40 @@
 /* --- Status --- */
 
 .status-line {
-  min-height: 14px;
-  padding: 10px 20px 0;
-  font-size: 9px;
+  min-height: 18px;
+  padding: 8px 20px 0;
+  font-size: 13px;
   color: var(--text-status);
   text-align: center;
+  white-space: pre-line;
+}
+
+/* --- Ações sobre o arquivo resultante (abrir / mostrar na pasta) --- */
+
+.file-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.file-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  background: var(--panel);
+  color: var(--text-filename);
+}
+
+.file-action-btn:hover {
+  background: var(--panel-hover);
+  border-color: var(--border-hover);
+  color: #fff;
 }
 
 /* --- Diálogo de formato --- */
@@ -222,17 +251,17 @@
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 20px 24px;
+  padding: 24px 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  min-width: 260px;
+  gap: 18px;
+  min-width: 300px;
 }
 
 .dialog-box h2 {
   margin: 0;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: bold;
   color: var(--text-title);
 }
@@ -243,22 +272,22 @@
   border: 1px solid var(--border);
   border-radius: 3px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  padding: 5px 8px;
-  width: 200px;
+  font-size: 14px;
+  padding: 6px 8px;
+  width: 220px;
 }
 
 .dialog-actions {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .dialog-btn {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 13px;
   border: none;
   border-radius: 4px;
-  padding: 6px 16px;
+  padding: 8px 18px;
   cursor: pointer;
 }
 

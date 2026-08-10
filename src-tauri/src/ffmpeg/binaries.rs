@@ -13,7 +13,7 @@ pub struct FfmpegBinaries {
     pub ffprobe: PathBuf,
 }
 
-/// Garante que ffmpeg.exe/ffprobe.exe existam em `%LOCALAPPDATA%\PrismaMidia\bin\`,
+/// Garante que ffmpeg.exe/ffprobe.exe existam em `%LOCALAPPDATA%\<identifier>\bin\`,
 /// extraindo os binários embutidos apenas se ainda não estiverem lá (ou se o
 /// tamanho não bater com o que está embutido no executável atual). Isso roda
 /// uma vez no primeiro uso; nas aberturas seguintes é só uma checagem de metadata.
