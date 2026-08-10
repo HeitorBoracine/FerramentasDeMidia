@@ -34,6 +34,11 @@ npm install
 npm run tauri dev
 ```
 
+Ou, no Windows, clique duas vezes em [`dev.bat`](dev.bat) — ele mata qualquer instância
+travada de uma execução anterior, checa Node/Rust/Git LFS, baixa os binários do FFmpeg via
+LFS se ainda forem só o ponteiro, limpa um build antigo do frontend, atualiza as
+dependências e abre o app.
+
 ## Gerando o executável final
 
 ```sh
