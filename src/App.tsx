@@ -12,6 +12,7 @@ import {
   cancelJob,
   compressVideo,
   convertFile,
+  getDragIconPath,
   getSettings,
   openFile,
   pickInputFile,
@@ -20,6 +21,7 @@ import {
   saveSettings,
   showError,
   showSuccess,
+  startFileDrag,
 } from "./lib/tauri";
 import {
   extensaoAtual,
@@ -131,10 +133,14 @@ function reducer(state: State, action: Action): State {
 export default function App() {
   const [state, dispatch] = useReducer(reducer, undefined, createInitialState);
   const settingsRef = useRef<Settings>({ lastOpenDir: null, lastSaveDir: null });
+  const dragIconRef = useRef<string | null>(null);
 
   useEffect(() => {
     getSettings().then((s) => {
       settingsRef.current = s;
+    });
+    getDragIconPath().then((p) => {
+      dragIconRef.current = p;
     });
   }, []);
 
@@ -289,6 +295,12 @@ export default function App() {
     if (state.lastOutputPath) await revealInFolder(state.lastOutputPath);
   }
 
+  async function handleStartDrag() {
+    if (state.lastOutputPath && dragIconRef.current) {
+      await startFileDrag(state.lastOutputPath, dragIconRef.current);
+    }
+  }
+
   const formatOptions = state.file ? formatosDestino(state.file.path, state.file.kind) : [];
 
   return (
@@ -327,6 +339,7 @@ export default function App() {
         <FileActions
           onOpenFile={() => void handleOpenFile()}
           onRevealInFolder={() => void handleRevealInFolder()}
+          onStartDrag={() => void handleStartDrag()}
         />
       )}
 

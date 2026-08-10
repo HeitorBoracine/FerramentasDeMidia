@@ -9,6 +9,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_drag::init())
         .manage(state::JobState::default())
         .setup(|app| {
             let binaries = ffmpeg::binaries::ensure_binaries(app.handle())?;
@@ -21,6 +22,7 @@ pub fn run() {
             commands::job::cancel_job,
             commands::settings::get_settings,
             commands::settings::save_settings,
+            commands::assets::get_drag_icon_path,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,6 +1,7 @@
 import { invoke, Channel } from "@tauri-apps/api/core";
 import { message, open, save } from "@tauri-apps/plugin-dialog";
 import { openPath, revealItemInDir } from "@tauri-apps/plugin-opener";
+import { startDrag } from "@crabnebula/tauri-plugin-drag";
 import type { ProgressEvent, Quality, Settings } from "../types";
 import { IMAGE_EXTS, VIDEO_EXTS } from "./formats";
 
@@ -80,4 +81,14 @@ export async function openFile(path: string) {
 
 export async function revealInFolder(path: string) {
   return revealItemInDir(path);
+}
+
+export async function getDragIconPath(): Promise<string> {
+  return invoke<string>("get_drag_icon_path");
+}
+
+/** Inicia um drag nativo do SO a partir de `mousedown` — o arquivo pode ser
+ * solto em qualquer outro app (Explorer, WhatsApp, etc), não só dentro da janela. */
+export async function startFileDrag(path: string, iconPath: string) {
+  return startDrag({ item: [path], icon: iconPath });
 }

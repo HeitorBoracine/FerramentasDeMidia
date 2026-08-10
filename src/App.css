@@ -236,6 +236,14 @@
   color: #fff;
 }
 
+.drag-handle {
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
 /* --- Diálogo de formato --- */
 
 .dialog-overlay {
