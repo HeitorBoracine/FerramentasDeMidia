@@ -1,6 +1,6 @@
 import { invoke, Channel } from "@tauri-apps/api/core";
 import { message, open, save } from "@tauri-apps/plugin-dialog";
-import { openPath, revealItemInDir } from "@tauri-apps/plugin-opener";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { startDrag } from "@crabnebula/tauri-plugin-drag";
 import type { ProgressEvent, Quality, Settings } from "../types";
 import { IMAGE_EXTS, VIDEO_EXTS } from "./formats";
@@ -76,7 +76,7 @@ export async function showError(title: string, text: string) {
 }
 
 export async function openFile(path: string) {
-  return openPath(path);
+  return invoke("open_output_file", { path });
 }
 
 export async function revealInFolder(path: string) {

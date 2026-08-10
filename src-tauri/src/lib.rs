@@ -23,6 +23,7 @@ pub fn run() {
             commands::settings::get_settings,
             commands::settings::save_settings,
             commands::assets::get_drag_icon_path,
+            commands::assets::open_output_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

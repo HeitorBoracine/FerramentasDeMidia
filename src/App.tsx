@@ -288,16 +288,29 @@ export default function App() {
   }
 
   async function handleOpenFile() {
-    if (state.lastOutputPath) await openFile(state.lastOutputPath);
+    if (!state.lastOutputPath) return;
+    try {
+      await openFile(state.lastOutputPath);
+    } catch (e) {
+      await showError("Não foi possível abrir o arquivo", String(e));
+    }
   }
 
   async function handleRevealInFolder() {
-    if (state.lastOutputPath) await revealInFolder(state.lastOutputPath);
+    if (!state.lastOutputPath) return;
+    try {
+      await revealInFolder(state.lastOutputPath);
+    } catch (e) {
+      await showError("Não foi possível abrir a pasta", String(e));
+    }
   }
 
   async function handleStartDrag() {
-    if (state.lastOutputPath && dragIconRef.current) {
+    if (!state.lastOutputPath || !dragIconRef.current) return;
+    try {
       await startFileDrag(state.lastOutputPath, dragIconRef.current);
+    } catch (e) {
+      await showError("Não foi possível iniciar o arraste", String(e));
     }
   }
 
