@@ -28,3 +28,9 @@ __pycache__/
 *.pyc
 build/
 legacy-python/dist/
+
+# Saída do build.bat (o .exe final fica em src-tauri/target/, isso aqui é só a cópia)
+/release/
+
+# Estado local de ferramentas de IA/editor
+.claude/
