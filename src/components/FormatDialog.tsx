@@ -1,20 +1,20 @@
 import { useState } from "react";
-import type { FileKind } from "../types";
 
 interface Props {
-  kind: FileKind;
+  title: string;
   options: string[];
+  confirmLabel?: string;
   onConfirm: (format: string) => void;
   onCancel: () => void;
 }
 
-export function FormatDialog({ kind, options, onConfirm, onCancel }: Props) {
+export function FormatDialog({ title, options, confirmLabel = "Converter", onConfirm, onCancel }: Props) {
   const [selected, setSelected] = useState(options[0]);
 
   return (
     <div className="dialog-overlay" onClick={onCancel}>
       <div className="dialog-box" onClick={(e) => e.stopPropagation()}>
-        <h2>Converter {kind === "video" ? "vídeo" : "imagem"} para:</h2>
+        <h2>{title}</h2>
         <select
           className="dialog-select"
           value={selected}
@@ -28,7 +28,7 @@ export function FormatDialog({ kind, options, onConfirm, onCancel }: Props) {
         </select>
         <div className="dialog-actions">
           <button className="dialog-btn dialog-btn-confirm" onClick={() => onConfirm(selected)}>
-            Converter
+            {confirmLabel}
           </button>
           <button className="dialog-btn dialog-btn-cancel" onClick={onCancel}>
             Cancelar

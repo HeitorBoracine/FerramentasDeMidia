@@ -1,5 +1,9 @@
 pub mod assets;
+pub mod audio;
 pub mod compress;
 pub mod convert;
+pub mod edit;
+pub mod gif;
 pub mod job;
+pub mod media_info;
 pub mod settings;

@@ -14,7 +14,7 @@
       {
         "title": "Ferramentas de Mídia",
         "width": 700,
-        "height": 580,
+        "height": 640,
         "resizable": false,
         "center": true,
         "dragDropEnabled": true,
@@ -24,7 +24,11 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": ["**"]
+      }
     }
   },
   "bundle": {

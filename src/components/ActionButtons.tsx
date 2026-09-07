@@ -18,7 +18,7 @@ export function ActionButtons({
   return (
     <div className="actions-row">
       <button className="btn btn-compress" disabled={!canCompress} onClick={onCompress}>
-        ⚡ COMPRIMIR VÍDEO
+        ⚡ COMPRIMIR
       </button>
       <button className="btn btn-convert" disabled={!canConvert} onClick={onConvert}>
         🔄 CONVERTER

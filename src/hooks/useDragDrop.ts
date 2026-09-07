@@ -9,7 +9,7 @@ import { getCurrentWebview } from "@tauri-apps/api/webview";
  * em QUALQUER lugar da janela seleciona o arquivo, o que é perigoso (solta
  * sem querer perto da borda e perde a seleção/resultado atual).
  */
-export function useDragDrop<T extends HTMLElement>(onDrop: (path: string) => void) {
+export function useDragDrop<T extends HTMLElement>(onDrop: (paths: string[]) => void) {
   const [dragOver, setDragOver] = useState(false);
   const zoneRef = useRef<T>(null);
 
@@ -33,9 +33,8 @@ export function useDragDrop<T extends HTMLElement>(onDrop: (path: string) => voi
 
       if (event.payload.type === "drop") {
         setDragOver(false);
-        if (inside) {
-          const [path] = event.payload.paths;
-          if (path) onDrop(path);
+        if (inside && event.payload.paths.length > 0) {
+          onDrop(event.payload.paths);
         }
       } else {
         // 'enter' | 'over'

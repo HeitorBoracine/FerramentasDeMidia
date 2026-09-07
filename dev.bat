@@ -33,21 +33,21 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM --- Verifica se ffmpeg.exe/ffprobe.exe existem e nao sao so um "ponteiro" do Git LFS nao baixado ---
-if not exist "src-tauri\assets\ffmpeg.exe" (
+REM --- Verifica se ffmpeg.exe.xz/ffprobe.exe.xz existem e nao sao so um "ponteiro" do Git LFS nao baixado ---
+if not exist "src-tauri\assets\ffmpeg.exe.xz" (
     echo.
-    echo [ERRO] src-tauri\assets\ffmpeg.exe nao encontrado.
+    echo [ERRO] src-tauri\assets\ffmpeg.exe.xz nao encontrado.
     pause
     exit /b 1
 )
-if not exist "src-tauri\assets\ffprobe.exe" (
+if not exist "src-tauri\assets\ffprobe.exe.xz" (
     echo.
-    echo [ERRO] src-tauri\assets\ffprobe.exe nao encontrado.
+    echo [ERRO] src-tauri\assets\ffprobe.exe.xz nao encontrado.
     pause
     exit /b 1
 )
 
-for %%F in ("src-tauri\assets\ffmpeg.exe") do set FFSIZE=%%~zF
+for %%F in ("src-tauri\assets\ffmpeg.exe.xz") do set FFSIZE=%%~zF
 if !FFSIZE! LSS 1000000 (
     echo   Binarios do FFmpeg parecem ser so ponteiros do Git LFS. Baixando...
     where git-lfs >nul 2>nul

@@ -1,9 +1,10 @@
 use std::path::PathBuf;
+use std::sync::Arc;
 
 use tauri::ipc::Channel;
 use tauri::State;
 
-use crate::ffmpeg::binaries::FfmpegBinaries;
+use crate::ffmpeg::binaries::BinariesCell;
 use crate::ffmpeg::{self, ProgressEvent};
 use crate::state::JobState;
 
@@ -35,13 +36,14 @@ fn video_codec_args(target_ext: &str) -> Vec<String> {
 pub fn convert_file(
     input: String,
     output: String,
-    binaries: State<FfmpegBinaries>,
+    binaries: State<Arc<BinariesCell>>,
     job_state: State<JobState>,
     on_progress: Channel<ProgressEvent>,
 ) -> Result<(), String> {
     if job_state.child.lock().unwrap().is_some() {
         return Err("Já existe uma operação em andamento.".into());
     }
+    let binaries = binaries.wait()?;
 
     let input_path = PathBuf::from(&input);
     let output_path = PathBuf::from(&output);

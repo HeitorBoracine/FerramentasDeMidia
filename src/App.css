@@ -4,6 +4,7 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  padding-bottom: 18px;
   background: var(--bg);
 }
 
@@ -99,7 +100,7 @@
   border: 2px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.1s, border-color 0.1s;
+  transition: background-color 0.1s, border-color 0.1s, height 0.15s ease;
 }
 
 .drop-zone.drag-over {
@@ -107,14 +108,32 @@
   border-color: var(--border-hover);
 }
 
+/* Encolhe pra uma barra compacta assim que um arquivo é selecionado — libera
+   espaço vertical pro resto da interface (qualidade/ações/ferramentas). */
+.drop-zone.has-file {
+  height: 56px;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.drop-zone.has-file .drop-icon {
+  font-size: 26px;
+}
+
+.drop-zone.has-file .drop-label {
+  font-size: 14px;
+}
+
 .drop-icon {
   font-size: 44px;
   line-height: 1;
+  transition: font-size 0.15s ease;
 }
 
 .drop-label {
   font-size: 16px;
   color: var(--text-label);
+  transition: font-size 0.15s ease;
 }
 
 .drop-label.selected {
@@ -139,6 +158,40 @@
   word-break: break-all;
 }
 
+/* --- Alternância entre arquivo original e resultado (pós compressão/conversão) --- */
+
+.source-toggle {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.source-toggle-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  background: var(--panel);
+  color: var(--text-label);
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-toggle-btn:hover:not(:disabled) {
+  border-color: var(--border-hover);
+  color: #fff;
+}
+
+.source-toggle-btn.active {
+  background: var(--accent-convert);
+  border-color: var(--accent-convert);
+  color: #fff;
+}
+
 /* --- Qualidade --- */
 
 .quality-row {
@@ -161,7 +214,12 @@
   border-radius: 3px;
   font-family: var(--font-mono);
   font-size: 14px;
-  padding: 6px 8px;
+  /* Altura fixa (em vez de só padding) — o `<select>` nativo do navegador
+     tem um padding vertical próprio que não bate exatamente com o de um
+     `<input>` mesmo com o mesmo CSS declarado, o que fazia a barra de
+     "por tamanho" ficar alguns pixels mais baixa/alta que o dropdown. */
+  height: 34px;
+  padding: 0 8px;
   width: 260px;
 }
 
@@ -227,7 +285,10 @@
 .progress-track {
   width: 640px;
   height: 14px;
-  margin: 6px 0 12px;
+  /* Mais respiro acima (separa da linha de ações/ferramentas) sem exagerar,
+     pra sempre sobrar espaço embaixo pros botões de arquivo que aparecem
+     ao concluir, sem empurrar nada. */
+  margin: 26px 0 12px;
   background: var(--progress-track);
   border-radius: 3px;
   overflow: hidden;
@@ -255,7 +316,8 @@
 .file-actions {
   display: flex;
   gap: 10px;
-  margin-top: 28px;
+  margin-top: 22px;
+  margin-bottom: 8px;
 }
 
 .file-action-btn {
@@ -316,6 +378,21 @@
   color: var(--text-title);
 }
 
+.dialog-box-error {
+  max-width: 440px;
+}
+
+.dialog-message {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-filename);
+  text-align: left;
+  white-space: pre-line;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
 .dialog-select {
   background: var(--panel);
   color: var(--text-title);
@@ -355,4 +432,358 @@
 }
 .dialog-btn-cancel:hover {
   background: var(--border);
+}
+
+.dialog-btn-error {
+  background: var(--accent-cancel);
+  color: var(--accent-cancel-text);
+}
+.dialog-btn-error:hover {
+  background: var(--accent-cancel-hover);
+  color: #fff;
+}
+
+/* --- Player de pré-visualização (Cortar/Extrair frame/Criar GIF) --- */
+
+.video-preview {
+  width: 460px;
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: 4px;
+  background: #000;
+}
+
+.video-preview-fallback {
+  width: 460px;
+  max-width: 100%;
+  margin: 0;
+  padding: 16px;
+  font-size: 12px;
+  color: var(--text-sub);
+  text-align: center;
+  background: var(--panel);
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+}
+
+.video-mark-row {
+  display: flex;
+  gap: 8px;
+}
+
+.mark-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 14px;
+  cursor: pointer;
+  background: var(--panel);
+  color: var(--text-filename);
+}
+
+.mark-btn:hover {
+  background: var(--panel-hover);
+  border-color: var(--border-hover);
+  color: #fff;
+}
+
+/* --- Campos de formulário dentro de diálogos (Cortar/Girar/Extrair frame/GIF) --- */
+
+.dialog-hint {
+  margin: -8px 0 0;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.dialog-field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.dialog-field-row label {
+  font-size: 13px;
+  color: var(--text-label);
+}
+
+.dialog-text-input {
+  background: var(--panel);
+  color: var(--text-title);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 6px 8px;
+  width: 100px;
+  text-align: right;
+}
+
+.dialog-text-input:focus,
+.target-size-input:focus {
+  outline: none;
+  border-color: var(--border-hover);
+}
+
+.dialog-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-label);
+  cursor: pointer;
+  width: 100%;
+}
+
+.dialog-error {
+  margin: 0;
+  font-size: 12px;
+  color: var(--accent-cancel-text);
+}
+
+/* --- Menu suspenso "Mais ferramentas" (só pra vídeo) --- */
+
+.tools-menu {
+  position: relative;
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.tools-menu-trigger {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 14px;
+  cursor: pointer;
+  background: var(--panel);
+  color: var(--text-filename);
+}
+
+.tools-menu-trigger:hover:not(:disabled) {
+  background: var(--panel-hover);
+  border-color: var(--border-hover);
+  color: #fff;
+}
+
+.tools-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 190px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  z-index: 30;
+}
+
+.tools-menu-item {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-align: left;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-filename);
+}
+
+.tools-menu-item:hover {
+  background: var(--panel-hover);
+  color: #fff;
+}
+
+/* --- Qualidade / tamanho-alvo na compressão de vídeo (uma linha só) --- */
+
+.compress-settings-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+/* Botões e slot do controle têm largura fixa de propósito — trocar de modo
+   só troca o texto/conteúdo, nunca reposiciona nada nessa linha. */
+.compress-mode-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.compress-mode-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: 118px;
+  padding: 7px 0;
+  text-align: center;
+  cursor: pointer;
+  background: var(--panel);
+  color: var(--text-label);
+}
+
+.compress-mode-btn:hover:not(:disabled) {
+  border-color: var(--border-hover);
+  color: #fff;
+}
+
+.compress-mode-btn.active {
+  background: var(--accent-convert);
+  border-color: var(--accent-convert);
+  color: #fff;
+}
+
+/* Largura fixa pra caber o maior rótulo de qualidade ("Alta (menos
+   compressão)"/"Baixa (mais compressão)") — o campo "25 MB" fica do mesmo
+   tamanho, então trocar de modo nunca reposiciona nada nessa linha. */
+.compress-value-slot {
+  width: 260px;
+  display: flex;
+  align-items: center;
+}
+
+.compress-value-slot .quality-select {
+  width: 100%;
+}
+
+/* Input + "MB" formam uma barra única do mesmo tamanho/altura que o
+   dropdown de qualidade (mesma altura fixa/fonte/borda) — junto ocupam os
+   mesmos 100% do slot de 260px, sem sobra vazia do lado. */
+.target-size-field {
+  display: flex;
+  width: 100%;
+}
+
+.target-size-input {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  background: var(--panel);
+  color: var(--text-title);
+  border: 1px solid var(--border);
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 0 8px;
+  text-align: right;
+}
+
+.target-size-suffix {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: var(--text-label);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 3px 3px 0;
+  box-sizing: border-box;
+}
+
+/* O destaque de foco tem que envolver a barra inteira (input + "MB"), não
+   só o input — senão a borda "para" antes do MB e fica com aparência de
+   quebrada/incompleta. `:focus-within` no bloco pai colore as duas partes
+   juntas. */
+.target-size-field:focus-within .target-size-input,
+.target-size-field:focus-within .target-size-suffix {
+  border-color: var(--border-hover);
+}
+
+.target-size-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Modo lote --- */
+
+.batch-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 16px 30px 24px;
+  overflow-y: auto;
+}
+
+.batch-title {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text-title);
+}
+
+.batch-config {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.batch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 640px;
+  margin: 10px 0 16px;
+}
+
+.batch-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 12px;
+}
+
+.batch-row-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.batch-row-name {
+  font-size: 12px;
+  color: var(--text-filename);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.batch-row-progress {
+  width: 120px;
+  height: 8px;
+  flex-shrink: 0;
+  background: var(--progress-track);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.batch-row-progress-fill {
+  height: 100%;
+  background: var(--progress-fill);
+  transition: width 0.15s linear;
+}
+
+.batch-row-error {
+  font-size: 11px;
+  color: var(--accent-cancel-text);
+  flex-shrink: 0;
 }

@@ -22,6 +22,20 @@ export function extensaoAtual(path: string): string {
   return (path.split(".").pop() ?? "").toLowerCase();
 }
 
+/** Contêineres que aceitam os codecs usados na compressão (h264/aac) sem
+ * precisar trocar de formato. `webm` exige VP9/Opus e `mpeg`/`mpg` exigem
+ * MPEG-1/2 — o ffmpeg recusa escrever h264/aac neles (testado empiricamente),
+ * então esses caem pra `.mp4`. */
+const COMPRESS_KEEP_CONTAINER_EXTS = new Set([
+  "mp4", "mkv", "avi", "mov", "wmv", "flv", "m4v", "3gp",
+]);
+
+/** Extensão de saída da compressão: mantém o formato original quando o
+ * container aceita h264/aac, senão cai pra mp4. */
+export function extensaoCompressao(ext: string): string {
+  return COMPRESS_KEEP_CONTAINER_EXTS.has(ext) ? ext : "mp4";
+}
+
 /** Formatos de destino disponíveis pra um arquivo, excluindo a extensão atual. */
 export function formatosDestino(path: string, kind: FileKind): string[] {
   const atual = extensaoAtual(path);

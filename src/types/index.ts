@@ -26,7 +26,11 @@ export type ProgressEvent =
   | { type: "error"; message: string }
   | { type: "cancelled" };
 
-export type JobKind = "compress" | "convert";
+export type JobKind = "compress" | "convert" | "trim" | "extractAudio" | "transform" | "extractFrame" | "gif";
+
+export type Rotation = "none" | "cw90" | "ccw90" | "deg180";
+
+export const AUDIO_FORMATOS = ["MP3", "AAC", "WAV", "FLAC"];
 
 export interface JobStatus {
   state: "idle" | "running" | "success" | "error" | "cancelled";

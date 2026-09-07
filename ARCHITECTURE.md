@@ -44,22 +44,36 @@ barra de progresso atualiza em tempo real sem polling.
 
 ## Binários do FFmpeg: embutidos e extraídos uma vez só
 
-`ffmpeg.exe`/`ffprobe.exe` (`src-tauri/assets/`, ~100MB cada, versionados via Git LFS)
-são embutidos no executável em tempo de compilação via `include_bytes!`
-(`src-tauri/src/ffmpeg/binaries.rs`). No `setup()` do app (`lib.rs`), `ensure_binaries()`
-extrai os dois pra:
+`ffmpeg.exe`/`ffprobe.exe` (~97MB cada, brutos) são versionados comprimidos com
+`xz -6` como `src-tauri/assets/ffmpeg.exe.xz`/`ffprobe.exe.xz` (~26MB cada, via
+Git LFS) — reduz o executável final embutido em ~140MB. São embutidos em tempo
+de compilação via `include_bytes!` (`src-tauri/src/ffmpeg/binaries.rs`), e
+descomprimidos (`lzma_rs::xz_decompress`, decoder XZ 100% Rust, sem depender de
+`liblzma`) pra:
 
 ```
 %LOCALAPPDATA%\com.heitor.ferramentasdemidia\bin\ffmpeg.exe
 %LOCALAPPDATA%\com.heitor.ferramentasdemidia\bin\ffprobe.exe
 ```
 
-...só se o arquivo ainda não existir lá ou tiver um tamanho diferente do que está
-embutido no binário atual. Ou seja: a extração roda uma vez no primeiro uso (ou depois de
-uma atualização do app); todas as aberturas seguintes só fazem uma checagem de metadata e
-seguem direto — é isso que torna a segunda abertura em diante quase instantânea, ao
-contrário do PyInstaller `--onefile` do app original, que reextraía tudo pra uma pasta
-temporária a cada execução.
+...só se o arquivo ainda não existir lá ou se um hash (FNV-1a) do `.xz` embutido
+for diferente do sidecar `ffmpeg.exe.hash`/`ffprobe.exe.hash` gravado na última
+extração — então a extração de verdade (que inclui descomprimir os ~26MB) só
+roda uma vez, no primeiro uso ou depois de uma atualização do app.
+
+**A extração roda numa thread separada, não no `setup()` do app.** O decoder
+XZ em Rust puro é rápido o bastante em release (~2s pros dois arquivos), mas em
+build de *debug* sem otimizações do compilador (o que `dev.bat`/`cargo tauri
+dev` usam) ele chega a levar **~10s por arquivo** — medido empiricamente. Se
+essa extração rodasse de forma síncrona no `setup()` (como antes), o app inteiro
+ficaria travado esse tempo todo antes da janela virar interativa. Em vez disso,
+`spawn_binaries_extraction()` dispara uma thread e devolve um `Arc<BinariesCell>`
+gerenciável (`app.manage()`) na hora — a janela abre e fica interativa
+imediatamente. Os comandos que precisam do ffmpeg (`compress_video`,
+`convert_file`, etc.) chamam `BinariesCell::wait()`, que só bloqueia de verdade
+se o usuário conseguir clicar num botão ANTES da extração terminar em segundo
+plano — na prática, quase nunca (escolher um arquivo e clicar já leva mais
+tempo que isso).
 
 ## Tabela de codecs por formato de destino
 
@@ -70,7 +84,7 @@ original em edições futuras — qualquer alteração aqui deve manter os dois 
 
 | Operação | Formato de saída | Codec de vídeo | Codec de áudio |
 |---|---|---|---|
-| Comprimir | (mesmo formato de entrada) | `libx264 -crf {23\|28\|35}` (Alta/Média/Baixa) | `aac -b:a 128k` |
+| Comprimir | mesmo formato de entrada — exceto `webm`/`mpeg`/`mpg`, que caem pra `mp4` (h264/aac não é aceito nesses containers, ver `extensaoCompressao` em `src/lib/formats.ts`) | `libx264 -crf {23\|28\|35}` (Alta/Média/Baixa) | `aac -b:a 128k` |
 | Converter | mp4/mkv/mov/outros | `libx264 -crf 23` | `aac -b:a 128k` |
 | Converter | webm | `libvpx-vp9 -crf 32` | `libopus` |
 | Converter | avi | `mpeg4 -vtag xvid -q:v 3` | `libmp3lame -b:a 192k` |
